@@ -1,39 +1,64 @@
-const { ApolloServer  } = require('apollo-server');
-const typeDefs = require('./db/schema');
-const resolvers = require('./db/resolvers');
-const conectarDB = require('./config/db');
-const jwt = require('jsonwebtoken');
-require('dotenv').config({ path: 'variables.env' });
+//Server definition
+import express from "express";
+import { ApolloServer } from "apollo-server-express";
 
-// Conectar a la base de datos
-conectarDB();
+//GQL use
+import schema from "./gql/index.js";
 
-// servidor
-const server = new ApolloServer({
-    typeDefs,
-    resolvers, 
-    context: ({req}) => {
-        // console.log(req.headers['authorization'])
+//server config
+import createSSLServer from "./config/ssl.js";
+import * as dotenv from "dotenv";
 
-        // console.log(req.headers);
+//logger setup
+import logger from "./config/logger.js";
+import morgan from "morgan";
 
-        const token = req.headers['authorization'] || '';
-        if(token) {
-            try {
-                const usuario = jwt.verify(token.replace('Bearer ', ''), process.env.SECRETA );
-                // console.log(usuario);
-                return {
-                    usuario
-                }
-            } catch (error) {
-                console.log('Hubo un error');
-                console.log(error);
-            }
-        }
-    }
-});
+async function startApolloServer() {
+  //get environtment variables
+  const environment = process.env.NODE_ENV || "production";
+  dotenv.config({ path: `.env.${environment}` });
 
-// arrancar el servidor
-server.listen({ port: process.env.PORT || 4000 }).then( ({url}) => {
-    console.log(`Servidor listo en la URL ${url}`)
-} )
+  //declaration server
+  let serverApollo = new ApolloServer({
+    schema,
+    tracing: true,
+    context: () => {
+      return { greetings: "From Context" };
+    },
+  });
+
+  //create https server
+  const app = express();
+  let server = createSSLServer(app);
+
+  //Logging
+  app.use(morgan("combined", { stream: logger.stream }));
+  //logger.info(`Environment:${process.env.NODE_ENV}`);
+  //logger.warn(`Environment2:${process.env.NODE_ENV}`);
+  //logger.error(`Environment3:${process.env.NODE_ENV}`);
+
+  //Example REST API
+  app.use("/api/nombre", async (req, res) => {
+    res.status(200);
+    res.send(JSON.stringify("data"));
+  });
+
+  //Add express to ApolloServer
+  serverApollo.applyMiddleware({ app, path: "/queries" });
+
+  //init server in port
+  await new Promise((resolve) =>
+    server.listen({ port: process.env.PORT }, resolve)
+  );
+
+  logger.info(
+    `🚀 Server ready at http${process.env.SSL === "true" ? "s" : ""}://${
+      process.env.HOST
+    }:${process.env.PORT}${serverApollo.graphqlPath}`
+  );
+
+  return { server, app };
+}
+
+//main method
+startApolloServer();

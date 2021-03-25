@@ -1,22 +1,34 @@
 {
-  "name": "crmgraphqlcurso",
+  "name": "example",
   "version": "1.0.0",
-  "description": "Curso de GraphQL",
+  "description": "GraphQL",
+  "type": "module",
   "main": "index.js",
   "scripts": {
+    "orm-auto": "sequelize-auto -h localhost  -d master -u sa -x Gal22v10 -p 1433  --dialect mssql -l esm",
     "start": "node .",
-    "dev": "nodemon ."
+    "dev": "NODE_ENV=development nodemon .",
+    "prod": "NODE_ENV=production nodemon ."
   },
-  "author": "Juan De la torre",
+  "author": "Polo Bustillo",
   "license": "ISC",
   "dependencies": {
-    "apollo-server": "^2.11.0",
+    "apollo-server": "^2.21.2",
     "bcryptjs": "^2.4.3",
+    "chalk": "^4.1.0",
     "dotenv": "^8.2.0",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.9.7"
+    "lodash": "^4.17.21",
+    "mongoose": "^5.12.2",
+    "morgan": "^1.10.0",
+    "sequelize": "^6.6.2",
+    "sequelize-auto": "^0.8.1",
+    "tedious": "^11.0.6",
+    "winston": "^3.3.3",
+    "winston-loggly-bulk": "^3.2.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.2"
+    "graphql": "^15.5.0",
+    "nodemon": "^2.0.7"
   }
 }
