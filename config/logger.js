@@ -4,8 +4,10 @@ import {
   enumerateErrorFormat,
 } from "../utils/utilsFuncs.js";
 import { Loggly } from "winston-loggly-bulk";
+
 import * as dotenv from "dotenv";
-dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
+
+dotenv.config({ path: `.env.${process.env.NODE_ENV || "development"}` });
 
 const logger = winston.createLogger({
   format: winston.format.combine(
@@ -31,7 +33,7 @@ const logger = winston.createLogger({
 logger.add(
   new Loggly({
     token: process.env.LOGGLY_TOKEN,
-    subdomain: process.env.LOGGLY_SUBDOMAIN,
+    subdomain: process.env.LOGGLY_SUBDOMAIN || "poloBustillo",
     tags: [`${process.env.NODE_ENV}`],
     json: true,
   })
