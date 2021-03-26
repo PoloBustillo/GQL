@@ -1,7 +1,5 @@
 import Sequelize from "sequelize";
-const staffsFunc = (sequelize, DataTypes) => {
-  return staffs.init(sequelize, DataTypes);
-};
+import bcrypt from "bcryptjs";
 
 class staffs extends Sequelize.Model {
   static init(sequelize, DataTypes) {
@@ -56,6 +54,16 @@ class staffs extends Sequelize.Model {
         },
       },
       {
+        hooks: {
+          beforeSave: async (staff, options) => {
+            if (staff._changed.has("password")) {
+              staff.password = bcrypt.hashSync(
+                staff.password,
+                bcrypt.genSaltSync(10)
+              );
+            }
+          },
+        },
         sequelize,
         tableName: "staffs",
         schema: "sales",
@@ -78,4 +86,4 @@ class staffs extends Sequelize.Model {
   }
 }
 
-export default staffsFunc;
+export default staffs;

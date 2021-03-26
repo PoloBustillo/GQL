@@ -1,5 +1,7 @@
 import winston from "winston";
 import chalk from "chalk";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
 
 export const myFormatWithColor = winston.format.printf(
   ({ level, message, stack, error, timestamp }) => {
@@ -26,6 +28,12 @@ export const myFormatWithColor = winston.format.printf(
   }
 );
 
+export const generateToken = (payload) => {
+  return jwt.sign(payload, process.env.JWT_SECRET, {
+    expiresIn: "30d",
+  });
+};
+
 export const enumerateErrorFormat = winston.format((info) => {
   if (info.message instanceof Error) {
     info.message = Object.assign(
@@ -49,3 +57,7 @@ export const enumerateErrorFormat = winston.format((info) => {
   }
   return info;
 });
+
+export const matchPassword = async function (enteredPassword, modelsPassword) {
+  return await bcrypt.compare(enteredPassword, modelsPassword);
+};

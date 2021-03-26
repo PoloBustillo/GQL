@@ -18,7 +18,7 @@ var _stocks = require("./stocks");
 const initModels = (sequelize) => {
   var brands = _brands(sequelize, DataTypes);
   var stores = _stores(sequelize, DataTypes);
-  var staffs = _staffs(sequelize, DataTypes);
+  var staffs = _staffs.init(sequelize, DataTypes);
   /*
   var categories = _categories(sequelize, DataTypes);
   var customers = _customers(sequelize, DataTypes);

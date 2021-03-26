@@ -11,6 +11,10 @@ export const typeDef = gql`
     active: Int!
     store_id: Store!
     manager_id: Staff
+    password: String
+  }
+  type Token {
+    token: String!
   }
   input inputStaff {
     first_name: String!
@@ -20,6 +24,11 @@ export const typeDef = gql`
     active: Int!
     store_id: Int!
     manager_id: Int
+    password: String
+  }
+  input inputCreedentials {
+    email: String!
+    password: String!
   }
 
   type Query {
@@ -29,6 +38,7 @@ export const typeDef = gql`
 
   type Mutation {
     createStaff(input: inputStaff): Staff
+    authStaff(input: inputCreedentials): Token
     createStaff2: String
   }
 `;
