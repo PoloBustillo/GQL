@@ -12,7 +12,7 @@ const staffResolverFunc = (models) => {
     },
     Query: {
       getAllStaff: async (_, input, ctx) => {
-        console.log("USER LOGGED", ctx.req.userId);
+        logger.info(`UserId from ctx ${ctx.req.userId}`);
         try {
           const staff = models.staffs.findAll({});
           return staff;
@@ -42,18 +42,14 @@ const staffResolverFunc = (models) => {
           throw new Error("User does not exists");
         }
         if (user && matchPassword(password, user.password)) {
-          console.log("PASSWORD MATCH");
+          ctx.res.cookie("token", generateToken({ userId: email }), {
+            httpOnly: true,
+            maxAge: 60 * 60 * 15,
+          });
+          return { token: generateToken({ userId: email }) };
         } else {
           throw new Error("Invalid email or password");
         }
-        ({ password, ...user } = user);
-
-        console.log(JSON.stringify({ userId: email }));
-        ctx.res.cookie("token", generateToken({ userId: email }), {
-          httpOnly: true,
-          maxAge: 60 * 60 * 15,
-        });
-        return { token: generateToken({ userId: email }) };
       },
       createStaff2: () => {
         return "Creando usuario2";
