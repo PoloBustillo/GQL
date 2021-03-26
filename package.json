@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "orm-auto": "sequelize-auto -h localhost  -d master -u sa -x Gal22v10 -p 1433  --dialect mssql -l esm",
-    "start": "NODE_ENV=development node .",
+    "start": "node .",
     "dev": "NODE_ENV=development nodemon .",
     "prod": "NODE_ENV=production nodemon ."
   },
