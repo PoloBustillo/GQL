@@ -34,6 +34,7 @@ export const typeDef = gql`
   type Query {
     #Staff
     getAllStaff: [Staff]
+    getStaffById(input: Int): Staff
   }
 
   type Mutation {

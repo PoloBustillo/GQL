@@ -9,21 +9,15 @@ import schema from "./gql/index.js";
 import createSSLServer from "./config/ssl.js";
 import * as dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-import {
-  extractUserIdFromToken,
-  corsConfig,
-  notFound,
-  errorHandler,
-} from "./middleware/index.js";
+import { extractUserIdFromToken, corsConfig } from "./middleware/index.js";
 //logger setup
 import logger from "./config/logger.js";
 import morgan from "morgan";
+//get environtment variables
+const environment = process.env.NODE_ENV || "development";
+dotenv.config({ path: `.env.${environment}` });
 
 async function startApolloServer() {
-  //get environtment variables
-  const environment = process.env.NODE_ENV || "development";
-  dotenv.config({ path: `.env.${environment}` });
-
   //declaration server
   let serverApollo = new ApolloServer({
     schema,
@@ -43,18 +37,18 @@ async function startApolloServer() {
   let server = createSSLServer(app);
 
   //Logging
-  //logger.info(`Environment:${process.env.NODE_ENV}`);
-  //logger.warn(`Environment2:${process.env.NODE_ENV}`);
-  //logger.error(`Environment3:${process.env.NODE_ENV}`);
+  // logger.info(`Environment:${process.env.NODE_ENV}`);
+  // logger.warn(`Environment2:${process.env.NODE_ENV}`);
+  // logger.error(`Environment3:${process.env.NODE_ENV}`);
   //Middleware
   app.use(morgan("combined", { stream: logger.stream }));
   app.use(express.json());
   app.use(cookieParser());
   app.use(extractUserIdFromToken);
   app.use(corsConfig);
-  app.use("/api/nombre", async (req, res) => {
+  app.use("/api/nombre", async (req, res, next) => {
     res.status(200);
-    res.send(JSON.stringify("data"));
+    res.send(JSON.stringify("Hola Mundo"));
   });
 
   //Add express to ApolloServer

@@ -20,6 +20,18 @@ const staffResolverFunc = (models) => {
           logger.error(error);
         }
       },
+      getStaffById: async (_, input, ctx) => {
+        logger.info(`GET user from id= ${input.input}`);
+
+        try {
+          const staff = await models.staffs.findOne({
+            where: { staff_id: input.input },
+          });
+          return staff;
+        } catch (error) {
+          logger.error(error);
+        }
+      },
     },
     Mutation: {
       createStaff: async (_, { input }) => {
