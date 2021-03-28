@@ -28,20 +28,24 @@ const logger = winston.createLogger({
     }),
   ],
 });
-
-//logs management witgh Loggly
-logger.add(
-  new Loggly({
-    token: process.env.LOGGLY_TOKEN,
-    subdomain: process.env.LOGGLY_SUBDOMAIN || "poloBustillo",
-    tags: [`${process.env.NODE_ENV}`],
-    json: true,
-  })
-);
 logger.stream = {
   write: function (message, encoding) {
     logger.info(message);
   },
 };
+//logs management witgh Loggly
+try {
+  logger.add(
+    new Loggly({
+      token: process.env.LOGGLY_TOKEN,
+      subdomain: process.env.LOGGLY_SUBDOMAIN || "poloBustillo",
+      tags: [`${process.env.NODE_ENV}`],
+      json: true,
+    })
+  );
+} catch (error) {
+  logger.error(error)
+}
+
 
 export default logger;

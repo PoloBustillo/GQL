@@ -56,13 +56,13 @@ async function startApolloServer() {
 
   //init server in port
   await new Promise((resolve) =>
-    server.listen({ port: process.env.PORT }, resolve)
+    server.listen({ port: process.env.PORT||4000 }, resolve)
   );
 
   logger.info(
     `🚀 Server ready at http${process.env.SSL === "true" ? "s" : ""}://${
-      process.env.HOSTNAME
-    }:${process.env.PORT}${serverApollo.graphqlPath}`
+      process.env.HOSTNAME||"localhost"
+    }:${process.env.PORT||4000}${serverApollo.graphqlPath}`
   );
 
   return { server, app };
